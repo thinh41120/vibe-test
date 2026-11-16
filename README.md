@@ -2,6 +2,8 @@
 
 Mini game phản xạ chạy trên trình duyệt: lưới 3×3, mỗi lượt 30 giây, đập trúng chuột được +1 điểm, kỷ lục lưu trong trình duyệt.
 
+**Chơi online:** https://thinh41120.github.io/vibe-test/ (GitHub Pages, tự cập nhật khi push lên `main`)
+
 | Thư mục | Nội dung |
 |---|---|
 | `app/` | Code game: `index.html`, `style.css`, `game.js` |
