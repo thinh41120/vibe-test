@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Đập chuột — Tài liệu</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../design/tokens.css">
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="wordmark" href="index.html">đập<span>.</span>chuột</a>
+      <span class="meta">Tài liệu đặc tả · v1.0 · 16/11/2026</span>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="toc" aria-label="Mục lục tài liệu">
+      <div class="label">Tài liệu</div>
+      <ol>
+        <li><a href="index.html" aria-current="page"><span class="num">00</span>Mục lục</a></li>
+        <li><a href="01-tong-quan.html"><span class="num">01</span>Tổng quan</a></li>
+        <li><a href="02-chuc-nang.html"><span class="num">02</span>Chức năng</a></li>
+        <li><a href="03-man-hinh.html"><span class="num">03</span>Màn hình</a></li>
+        <li><a href="04-quy-tac-du-lieu.html"><span class="num">04</span>Quy tắc &amp; dữ liệu</a></li>
+        <li><a href="05-ke-hoach-test.html"><span class="num">05</span>Kế hoạch test</a></li>
+      </ol>
+    </nav>
+    <main>
+      <span class="eyebrow">Mini game trình duyệt · Tài liệu đặc tả</span>
+      <h1>Đập chuột</h1>
+      <p class="lead">Bộ tài liệu mô tả đầy đủ game Đập chuột trước khi viết code: lưới 3×3, mỗi lượt 30 giây, bấm trúng chuột được +1 điểm. Tài liệu dựa trên <code>YEU-CAU.md</code> và 5 quyết định đã chốt qua phỏng vấn.</p>
+
+      <div class="card-grid">
+        <a class="card" href="01-tong-quan.html">
+          <span class="num">01</span>
+          <h3>Tổng quan</h3>
+          <p>Mục tiêu, người chơi, phạm vi trong/ngoài, các quyết định đã chốt và thuật ngữ.</p>
+        </a>
+        <a class="card" href="02-chuc-nang.html">
+          <span class="num">02</span>
+          <h3>Chức năng</h3>
+          <p>Vòng đời lượt chơi, đếm ngược 3-2-1, sinh chuột, đập chuột, bàn phím, kỷ lục.</p>
+        </a>
+        <a class="card" href="03-man-hinh.html">
+          <span class="num">03</span>
+          <h3>Màn hình</h3>
+          <p>Wireframe 4 trạng thái màn hình, thành phần, hình SVG, responsive và truy cập.</p>
+        </a>
+        <a class="card" href="04-quy-tac-du-lieu.html">
+          <span class="num">04</span>
+          <h3>Quy tắc &amp; dữ liệu</h3>
+          <p>Hằng số thời gian, mô hình trạng thái, quy tắc tính điểm, đồng hồ và <code>localStorage</code>.</p>
+        </a>
+        <a class="card" href="05-ke-hoach-test.html">
+          <span class="num">05</span>
+          <h3>Kế hoạch test</h3>
+          <p>Môi trường, ca kiểm thử theo từng tiêu chí hoàn thành, tiêu chí đạt.</p>
+        </a>
+      </div>
+
+      <h2>Quyết định đã chốt</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Câu hỏi</th><th>Quyết định</th></tr></thead>
+          <tbody>
+            <tr><td class="id">Q1</td><td>Chuyển tab giữa lượt</td><td>Đồng hồ <strong>vẫn chạy tiếp</strong> theo thời gian thực; không tạm dừng.</td></tr>
+            <tr><td class="id">Q2</td><td>Tốc độ chuột</td><td><strong>Cố định</strong>: hiện 800 ms, nghỉ 300 ms trong suốt lượt.</td></tr>
+            <tr><td class="id">Q3</td><td>Bắt đầu lượt</td><td><strong>Đếm ngược 3-2-1</strong> (3 giây, không tính vào 30 giây).</td></tr>
+            <tr><td class="id">Q4</td><td>Hình chuột và hố</td><td><strong>SVG tự vẽ</strong> theo bảng màu <code>tokens.css</code>.</td></tr>
+            <tr><td class="id">Q5</td><td>Bàn phím</td><td><strong>Có</strong>: phím 1–9 theo bố cục bàn phím số; <kbd>Enter</kbd>/<kbd>Space</kbd> để Bắt đầu/Chơi lại.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout info">
+        <strong>Trạng thái</strong>
+        <p>Đây là tài liệu đặc tả. Code game chưa được viết; khi viết, mọi hành vi phải khớp các trang 02–04 và vượt qua kế hoạch test ở trang 05.</p>
+      </div>
+      <nav class="pager" aria-label="Chuyển trang"><a class="next" href="01-tong-quan.html"><span>Trang sau →</span>Tổng quan</a></nav>
+    </main>
+  </div>
+  <footer class="site">Mini game Đập chuột · Tài liệu đặc tả, chưa có code game · Giao diện theo <code>design/tokens.css</code></footer>
+</body>
+</html>

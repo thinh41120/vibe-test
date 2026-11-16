@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chức năng — Đập chuột</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../design/tokens.css">
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="wordmark" href="index.html">đập<span>.</span>chuột</a>
+      <span class="meta">Tài liệu đặc tả · v1.0 · 16/11/2026</span>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="toc" aria-label="Mục lục tài liệu">
+      <div class="label">Tài liệu</div>
+      <ol>
+        <li><a href="index.html"><span class="num">00</span>Mục lục</a></li>
+        <li><a href="01-tong-quan.html"><span class="num">01</span>Tổng quan</a></li>
+        <li><a href="02-chuc-nang.html" aria-current="page"><span class="num">02</span>Chức năng</a></li>
+        <li><a href="03-man-hinh.html"><span class="num">03</span>Màn hình</a></li>
+        <li><a href="04-quy-tac-du-lieu.html"><span class="num">04</span>Quy tắc &amp; dữ liệu</a></li>
+        <li><a href="05-ke-hoach-test.html"><span class="num">05</span>Kế hoạch test</a></li>
+      </ol>
+    </nav>
+    <main>
+      <span class="eyebrow">Tài liệu 02</span>
+      <h1>Chức năng</h1>
+      <p class="lead">Game có bốn trạng thái. Mọi thao tác của người chơi chỉ có tác dụng ở trạng thái phù hợp; ở trạng thái khác thì bị bỏ qua, không báo lỗi.</p>
+
+      <h2>Luồng trạng thái</h2>
+      <div class="flow" role="img" aria-label="Bắt đầu, sang Đếm ngược, sang Đang chơi, sang Kết thúc, rồi Chơi lại về Đếm ngược">
+        <span class="node">Bắt đầu</span>
+        <span class="arrow">— Bắt đầu / Enter / Space →</span>
+        <span class="node">Đếm ngược 3-2-1</span>
+        <span class="arrow">— sau 3 giây →</span>
+        <span class="node hot">Đang chơi 30 giây</span>
+        <span class="arrow">— đồng hồ về 0 →</span>
+        <span class="node">Kết thúc</span>
+        <span class="arrow">— Chơi lại / Enter / Space → Đếm ngược</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Trạng thái</th><th>Mã</th><th>Chuột</th><th>Bấm ô / phím 1–9</th><th>Enter / Space</th></tr></thead>
+          <tbody>
+            <tr><td>Bắt đầu</td><td><code>idle</code></td><td>Không có</td><td>Bỏ qua</td><td>Bắt đầu lượt</td></tr>
+            <tr><td>Đếm ngược</td><td><code>countdown</code></td><td>Không có</td><td>Bỏ qua</td><td>Bỏ qua</td></tr>
+            <tr><td>Đang chơi</td><td><code>playing</code></td><td>Tối đa 1</td><td>Xử lý đập</td><td>Bỏ qua</td></tr>
+            <tr><td>Kết thúc</td><td><code>ended</code></td><td>Không có</td><td>Bỏ qua</td><td>Chơi lại</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Danh sách chức năng</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mã</th><th>Chức năng</th><th>Mô tả và kết quả mong đợi</th></tr></thead>
+          <tbody>
+            <tr><td class="id">F-01</td><td>Màn hình Bắt đầu</td><td>Hiện tên game, luật 1–2 dòng, nút <strong>Bắt đầu</strong>. Nếu kỷ lục &gt; 0 thì hiện "Kỷ lục: N"; nếu chưa có thì ẩn dòng này.</td></tr>
+            <tr><td class="id">F-02</td><td>Bắt đầu lượt</td><td>Bấm <strong>Bắt đầu</strong> hoặc <kbd>Enter</kbd>/<kbd>Space</kbd> ở trạng thái <code>idle</code>: điểm = 0, thời gian hiển thị = 30, lưới sạch, chuyển sang <code>countdown</code>. Chỉ có tác dụng một lần; bấm thêm bị bỏ qua.</td></tr>
+            <tr><td class="id">F-03</td><td>Đếm ngược 3-2-1</td><td>Hiện số 3, 2, 1 lớn đè lên lưới, mỗi số 1 giây (tổng 3 giây). Không có chuột, mọi thao tác trên lưới bị bỏ qua. Hết số 1 thì vào <code>playing</code> và đồng hồ 30 giây bắt đầu ngay.</td></tr>
+            <tr><td class="id">F-04</td><td>Đồng hồ lượt</td><td>Đếm ngược 30 → 0 giây theo thời gian thực (xem quy tắc R-T1–R-T4). Hiển thị số giây làm tròn lên; cập nhật ít nhất 4 lần/giây để không trễ khi chuyển số.</td></tr>
+            <tr><td class="id">F-05</td><td>Sinh chuột</td><td>Chuột đầu tiên hiện ngay khi đồng hồ bắt đầu. Mỗi chuột sau hiện 300 ms sau khi chuột trước biến mất (bị đập hoặc hết hạn). Ô được chọn ngẫu nhiên đều trong 9 ô, có thể trùng ô trước.</td></tr>
+            <tr><td class="id">F-06</td><td>Chuột tự biến mất</td><td>Chuột không bị đập biến mất sau đúng 800 ms kể từ lúc hiện. Không đổi điểm.</td></tr>
+            <tr><td class="id">F-07</td><td>Đập chuột (chuột / cảm ứng)</td><td>Bấm xuống (lúc nhấn, không chờ nhả) vào ô có chuột còn hiệu lực: +1 điểm, chuột biến mất ngay, hiện hiệu ứng trúng. Bấm ô trống: không đổi điểm. Bấm nhiều lần vào cùng chuột: chỉ lần đầu được tính.</td></tr>
+            <tr><td class="id">F-08</td><td>Điều khiển bàn phím</td><td>Phím <kbd>1</kbd>–<kbd>9</kbd> (hàng số hoặc bàn phím số) tương đương bấm ô tương ứng (bản đồ phím ở trang 03). Giữ phím (lặp tự động) chỉ tính lần nhấn đầu. <kbd>Enter</kbd>/<kbd>Space</kbd> kích hoạt nút đang hiện (Bắt đầu / Chơi lại).</td></tr>
+            <tr><td class="id">F-09</td><td>Hiệu ứng trúng</td><td>Ô vừa trúng nháy viền màu nhấn và hiện "+1" bay lên, kéo dài khoảng 300 ms. Hiệu ứng chỉ là trang trí: không chặn thao tác, không ảnh hưởng chuột kế tiếp.</td></tr>
+            <tr><td class="id">F-10</td><td>Kết thúc lượt</td><td>Khi đồng hồ về 0: xoá chuột đang hiện và chuột đang chờ, ngừng nhận thao tác trên lưới, chuyển sang <code>ended</code> và hiện màn hình Kết thúc với "Hết giờ!", điểm lượt, kỷ lục.</td></tr>
+            <tr><td class="id">F-11</td><td>Kỷ lục</td><td>Khi kết thúc, nếu điểm lượt <em>lớn hơn hẳn</em> kỷ lục cũ: lưu kỷ lục mới và hiện dòng "Kỷ lục mới!". Bằng hoặc thấp hơn: giữ kỷ lục cũ. Kỷ lục còn sau khi tải lại trang.</td></tr>
+            <tr><td class="id">F-12</td><td>Chơi lại</td><td>Bấm <strong>Chơi lại</strong> hoặc <kbd>Enter</kbd>/<kbd>Space</kbd> ở <code>ended</code>: đặt lại như F-02 rồi vào đếm ngược. Bấm liên tục nhiều lần chỉ tạo một lượt; không có hai đồng hồ hay hai chuột chạy song song.</td></tr>
+            <tr><td class="id">F-13</td><td>Chuyển tab</td><td>Rời tab giữa lượt thì lượt vẫn tiếp diễn theo thời gian thực. Quay lại: nếu đã hết giờ thì hiện ngay màn hình Kết thúc; nếu chưa thì giao diện cập nhật đúng thời gian còn lại, không còn chuột đã quá hạn. Áp dụng cả khi đang đếm ngược.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Vòng đời một con chuột</h2>
+      <div class="flow">
+        <span class="node">Chờ 300 ms</span>
+        <span class="arrow">→</span>
+        <span class="node hot">Hiện (≤ 800 ms)</span>
+        <span class="arrow">→ bị đập: +1, biến mất ngay</span>
+        <span class="arrow">/ hết 800 ms: biến mất, 0 điểm →</span>
+        <span class="node">Chờ 300 ms</span>
+      </div>
+      <p>Ví dụ dòng thời gian (ms tính từ khi đồng hồ chạy):</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Thời điểm</th><th>Sự kiện</th><th>Điểm</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>Chuột A hiện ở ô 5</td><td>0</td></tr>
+            <tr><td>420</td><td>Người chơi bấm ô 5 → trúng, A biến mất</td><td>1</td></tr>
+            <tr><td>450</td><td>Bấm ô 5 lần nữa → ô trống, bỏ qua</td><td>1</td></tr>
+            <tr><td>720</td><td>Chuột B hiện ở ô 2 (420 + 300)</td><td>1</td></tr>
+            <tr><td>1 520</td><td>B hết hạn (720 + 800), biến mất</td><td>1</td></tr>
+            <tr><td>1 820</td><td>Chuột C hiện ở ô 2 (trùng ô được phép)</td><td>1</td></tr>
+            <tr><td>30 000</td><td>Hết giờ: chuột đang hiện (nếu có) bị xoá, chuyển Kết thúc</td><td>giữ nguyên</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warn">
+        <strong>Chuột sát giờ kết thúc</strong>
+        <p>Chuột vẫn có thể hiện khi còn dưới 800 ms; nó bị xoá lúc hết giờ. Bấm trúng trước mốc 30 000 ms vẫn được tính, bấm từ mốc đó trở đi thì không.</p>
+      </div>
+      <nav class="pager" aria-label="Chuyển trang"><a class="prev" href="01-tong-quan.html"><span>← Trang trước</span>Tổng quan</a><a class="next" href="03-man-hinh.html"><span>Trang sau →</span>Màn hình</a></nav>
+    </main>
+  </div>
+  <footer class="site">Mini game Đập chuột · Tài liệu đặc tả, chưa có code game · Giao diện theo <code>design/tokens.css</code></footer>
+</body>
+</html>

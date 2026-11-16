@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Màn hình — Đập chuột</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../design/tokens.css">
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="wordmark" href="index.html">đập<span>.</span>chuột</a>
+      <span class="meta">Tài liệu đặc tả · v1.0 · 16/11/2026</span>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="toc" aria-label="Mục lục tài liệu">
+      <div class="label">Tài liệu</div>
+      <ol>
+        <li><a href="index.html"><span class="num">00</span>Mục lục</a></li>
+        <li><a href="01-tong-quan.html"><span class="num">01</span>Tổng quan</a></li>
+        <li><a href="02-chuc-nang.html"><span class="num">02</span>Chức năng</a></li>
+        <li><a href="03-man-hinh.html" aria-current="page"><span class="num">03</span>Màn hình</a></li>
+        <li><a href="04-quy-tac-du-lieu.html"><span class="num">04</span>Quy tắc &amp; dữ liệu</a></li>
+        <li><a href="05-ke-hoach-test.html"><span class="num">05</span>Kế hoạch test</a></li>
+      </ol>
+    </nav>
+    <main>
+      <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+        <symbol id="mole" viewBox="0 0 100 100">
+          <ellipse cx="50" cy="86" rx="40" ry="11" style="fill: var(--color-ink-700)"/>
+          <circle cx="27" cy="30" r="9" style="fill: var(--color-clay-600)"/>
+          <circle cx="73" cy="30" r="9" style="fill: var(--color-clay-600)"/>
+          <path d="M18 86 V52 a32 32 0 0 1 64 0 V86 Z" style="fill: var(--color-clay-500)"/>
+          <ellipse cx="50" cy="64" rx="17" ry="13" style="fill: var(--color-clay-100)"/>
+          <circle cx="39" cy="46" r="4.5" style="fill: var(--color-ink-900)"/>
+          <circle cx="61" cy="46" r="4.5" style="fill: var(--color-ink-900)"/>
+          <ellipse cx="50" cy="57" rx="5.5" ry="4" style="fill: var(--color-ink-900)"/>
+          <ellipse cx="50" cy="90" rx="44" ry="8" style="fill: var(--color-sand-300)"/>
+        </symbol>
+      </svg>
+
+      <span class="eyebrow">Tài liệu 03</span>
+      <h1>Màn hình</h1>
+      <p class="lead">Game là một trang duy nhất, chuyển giữa ba màn hình; đếm ngược là lớp phủ trên màn hình chơi. Wireframe dưới đây minh hoạ bố cục trên điện thoại, dùng màu và bo góc từ <code>tokens.css</code>.</p>
+
+      <h2>Wireframe</h2>
+      <div class="screens">
+        <div class="phone">
+          <span class="caption">3.1 · Bắt đầu</span>
+          <div class="spacer"></div>
+          <svg viewBox="0 0 100 100" style="width: var(--swatch-size); height: var(--swatch-size)" aria-hidden="true"><use href="#mole"/></svg>
+          <div class="title">Đập chuột</div>
+          <div class="text">Đập trúng chuột để được +1 điểm.<br>Bạn có 30 giây.</div>
+          <span class="wf-btn">Bắt đầu</span>
+          <div class="text">Kỷ lục: 24</div>
+          <div class="spacer"></div>
+        </div>
+
+        <div class="phone">
+          <span class="caption">3.2a · Đếm ngược</span>
+          <div class="wf-status"><span>⏱ 30</span><span>Điểm 0</span></div>
+          <div class="wf-grid">
+            <div class="wf-cell"><span class="key">7</span><div class="hole"></div></div>
+            <div class="wf-cell"><span class="key">8</span><div class="hole"></div></div>
+            <div class="wf-cell"><span class="key">9</span><div class="hole"></div></div>
+            <div class="wf-cell"><span class="key">4</span><div class="hole"></div></div>
+            <div class="wf-cell"><span class="key">5</span><div class="hole"></div></div>
+            <div class="wf-cell"><span class="key">6</span><div class="hole"></div></div>
+            <div class="wf-cell"><span class="key">1</span><div class="hole"></div></div>
+            <div class="wf-cell"><span class="key">2</span><div class="hole"></div></div>
+            <div class="wf-cell"><span class="key">3</span><div class="hole"></div></div>
+            <div class="wf-overlay">2</div>
+          </div>
+          <div class="text">Lớp phủ 3 → 2 → 1, mỗi số 1 giây</div>
+        </div>
+
+        <div class="phone">
+          <span class="caption">3.2b · Đang chơi</span>
+          <div class="wf-status"><span>⏱ 17</span><span>Điểm 9</span></div>
+          <div class="wf-grid">
+            <div class="wf-cell"><span class="key">7</span><div class="hole"></div></div>
+            <div class="wf-cell"><span class="key">8</span><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#mole"/></svg></div>
+            <div class="wf-cell"><span class="key">9</span><div class="hole"></div></div>
+            <div class="wf-cell"><span class="key">4</span><div class="hole"></div></div>
+            <div class="wf-cell"><span class="key">5</span><div class="hole"></div></div>
+            <div class="wf-cell"><span class="key">6</span><div class="hole"></div></div>
+            <div class="wf-cell hit"><span class="key">1</span><span class="plus">+1</span><div class="hole"></div></div>
+            <div class="wf-cell"><span class="key">2</span><div class="hole"></div></div>
+            <div class="wf-cell"><span class="key">3</span><div class="hole"></div></div>
+          </div>
+          <div class="text">Ô 8 có chuột · ô 1 vừa trúng</div>
+        </div>
+
+        <div class="phone">
+          <span class="caption">3.3 · Kết thúc</span>
+          <div class="spacer"></div>
+          <div class="title">Hết giờ!</div>
+          <div class="text">Điểm của bạn</div>
+          <div class="big">27</div>
+          <span class="wf-record">Kỷ lục mới!</span>
+          <div class="text">Kỷ lục: 27</div>
+          <span class="wf-btn">Chơi lại</span>
+          <div class="spacer"></div>
+        </div>
+      </div>
+      <p class="small muted">Số nhỏ ở góc mỗi ô là phím tắt tương ứng; hiển thị trên thiết bị có bàn phím, có thể ẩn trên màn hình cảm ứng.</p>
+
+      <h2>3.1 Màn hình Bắt đầu</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Thành phần</th><th>Nội dung / hành vi</th></tr></thead>
+          <tbody>
+            <tr><td>Hình minh hoạ</td><td>Chuột SVG nhô lên từ hố (cùng hình trong game).</td></tr>
+            <tr><td>Tên game</td><td>"Đập chuột", font hiển thị (Fraunces), cỡ <code>--font-size-4xl</code> trên desktop.</td></tr>
+            <tr><td>Luật chơi</td><td>Tối đa 2 dòng: "Đập trúng chuột để được +1 điểm. Bạn có 30 giây."</td></tr>
+            <tr><td>Nút Bắt đầu</td><td>Nút nhấn chính (màu <code>--color-accent</code>, bo <code>--radius-pill</code>, cao <code>--control-height-lg</code>). Tự nhận focus khi trang tải để <kbd>Enter</kbd>/<kbd>Space</kbd> dùng được ngay.</td></tr>
+            <tr><td>Kỷ lục</td><td>"Kỷ lục: N" khi N &gt; 0; ẩn khi chưa có.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>3.2 Màn hình Chơi</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Thành phần</th><th>Nội dung / hành vi</th></tr></thead>
+          <tbody>
+            <tr><td>Thanh trạng thái</td><td>Trái: thời gian còn lại (giây, số nguyên, làm tròn lên). Phải: điểm hiện tại. Dùng số có độ rộng cố định để chữ không nhảy. Khi còn ≤ 5 giây, thời gian đổi sang màu <code>--color-danger</code>.</td></tr>
+            <tr><td>Lưới 3×3</td><td>9 ô vuông bằng nhau, khoảng cách <code>--space-3</code>, nền lưới <code>--color-sage-100</code>, bo <code>--radius-lg</code>. Con trỏ <code>pointer</code> khi di vào lưới.</td></tr>
+            <tr><td>Lớp phủ đếm ngược</td><td>Số 3 / 2 / 1 rất lớn (<code>--font-size-5xl</code> trở lên) trên nền <code>--color-overlay</code>, che lưới. Chỉ có trong trạng thái <code>countdown</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Trạng thái của một ô</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Trạng thái</th><th>Hình</th><th>Màu chính</th></tr></thead>
+          <tbody>
+            <tr><td>Trống</td><td>Hố hình elip tối ở nửa dưới ô.</td><td>Ô <code>--color-sand-300</code>, hố <code>--color-ink-700</code></td></tr>
+            <tr><td>Có chuột</td><td>Chuột SVG nhô lên khỏi hố, có chuyển động trồi lên ngắn (≤ 100 ms) — chuột tính là "có" ngay từ đầu chuyển động.</td><td>Thân <code>--color-clay-500</code>, mõm <code>--color-clay-100</code>, mắt <code>--color-ink-900</code></td></tr>
+            <tr><td>Vừa trúng</td><td>Chuột biến mất ngay; ô nháy viền và "+1" bay lên ~300 ms.</td><td>Viền và chữ <code>--color-accent</code>, nền <code>--color-clay-100</code></td></tr>
+            <tr><td>Focus bàn phím</td><td>Vòng focus quanh ô khi dùng <kbd>Tab</kbd>.</td><td><code>--color-focus-ring</code>, dày <code>--focus-ring-width</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Hình SVG</h3>
+      <div class="card-grid">
+        <div class="card" style="align-items: center">
+          <div class="wf-cell" style="width: calc(var(--swatch-size) * 1.6)"><div class="hole"></div></div>
+          <p>Ô trống</p>
+        </div>
+        <div class="card" style="align-items: center">
+          <div class="wf-cell" style="width: calc(var(--swatch-size) * 1.6)"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#mole"/></svg></div>
+          <p>Ô có chuột</p>
+        </div>
+        <div class="card" style="align-items: center">
+          <div class="wf-cell hit" style="width: calc(var(--swatch-size) * 1.6)"><span class="plus">+1</span><div class="hole"></div></div>
+          <p>Ô vừa trúng</p>
+        </div>
+      </div>
+      <ul>
+        <li>Vẽ bằng hình cơ bản (tròn, elip, path), không dùng ảnh ngoài; màu lấy từ biến <code>tokens.css</code>.</li>
+        <li>Chuột và hố phải phân biệt rõ cả khi nhìn lướt: tương phản thân chuột với hố và nền ô đạt tối thiểu 3:1.</li>
+        <li>Hình trên đây là phác thảo minh hoạ cho tài liệu; hình cuối cùng có thể tinh chỉnh khi viết code.</li>
+      </ul>
+
+      <h2>3.3 Màn hình Kết thúc</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Thành phần</th><th>Nội dung / hành vi</th></tr></thead>
+          <tbody>
+            <tr><td>Tiêu đề</td><td>"Hết giờ!"</td></tr>
+            <tr><td>Điểm lượt</td><td>Số lớn, màu nhấn.</td></tr>
+            <tr><td>Kỷ lục mới</td><td>Nhãn "Kỷ lục mới!" chỉ hiện khi điểm lượt lớn hơn kỷ lục cũ.</td></tr>
+            <tr><td>Kỷ lục</td><td>"Kỷ lục: N" (đã cập nhật nếu vừa phá).</td></tr>
+            <tr><td>Nút Chơi lại</td><td>Nút nhấn chính, tự nhận focus. Bị vô hiệu ngay sau lần bấm đầu để tránh tạo nhiều lượt.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Bàn phím</h2>
+      <p>Phím 1–9 theo bố cục bàn phím số: hàng trên là 7-8-9, hàng dưới là 1-2-3. Áp dụng cho cả hàng số phía trên bàn phím chữ.</p>
+      <div class="keypad" aria-label="Sơ đồ phím ứng với lưới">
+        <kbd>7</kbd><kbd>8</kbd><kbd>9</kbd>
+        <kbd>4</kbd><kbd>5</kbd><kbd>6</kbd>
+        <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Phím</th><th>Tác dụng</th><th>Trạng thái</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>1</kbd>–<kbd>9</kbd></td><td>Đập ô tương ứng</td><td>Chỉ <code>playing</code></td></tr>
+            <tr><td><kbd>Enter</kbd> / <kbd>Space</kbd></td><td>Bắt đầu / Chơi lại</td><td><code>idle</code> / <code>ended</code></td></tr>
+            <tr><td><kbd>Tab</kbd></td><td>Di chuyển focus giữa nút và các ô</td><td>Mọi trạng thái</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Responsive</h2>
+      <ul>
+        <li>Một cột, căn giữa. Chiều rộng lưới = nhỏ hơn giữa 92% bề ngang màn hình và khoảng 480 px; luôn vừa màn hình không cần cuộn khi chơi.</li>
+        <li>Mỗi ô tối thiểu 64 px trên màn hình hẹp nhất hỗ trợ (320 px).</li>
+        <li>Desktop: lưới không vượt quá ~480 px để mắt bao quát được cả 9 ô.</li>
+        <li>Xoay ngang điện thoại: thanh trạng thái và lưới vẫn nhìn thấy trọn, lưới thu nhỏ theo chiều cao.</li>
+      </ul>
+
+      <h2>Truy cập &amp; chống thao tác nhầm</h2>
+      <ul>
+        <li>Mỗi ô là một phần tử bấm được có nhãn đọc cho trình đọc màn hình ("Ô 7", "Ô 7, có chuột").</li>
+        <li>Thông báo đếm ngược và "Hết giờ!" qua vùng <code>aria-live="polite"</code>; không đọc từng lần +1 để tránh ồn.</li>
+        <li>Chặn bôi đen chữ và menu chạm giữ trong khu vực chơi; tắt phóng to khi chạm đúp (<code>touch-action: manipulation</code>).</li>
+        <li>Tôn trọng <code>prefers-reduced-motion</code>: bỏ chuyển động trồi lên và "+1" bay, chỉ giữ đổi màu.</li>
+        <li>Chữ và số trên thanh trạng thái đạt tương phản tối thiểu 4.5:1 với nền.</li>
+      </ul>
+      <nav class="pager" aria-label="Chuyển trang"><a class="prev" href="02-chuc-nang.html"><span>← Trang trước</span>Chức năng</a><a class="next" href="04-quy-tac-du-lieu.html"><span>Trang sau →</span>Quy tắc &amp; dữ liệu</a></nav>
+    </main>
+  </div>
+  <footer class="site">Mini game Đập chuột · Tài liệu đặc tả, chưa có code game · Giao diện theo <code>design/tokens.css</code></footer>
+</body>
+</html>

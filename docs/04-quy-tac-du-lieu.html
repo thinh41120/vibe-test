@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quy tắc &amp; dữ liệu — Đập chuột</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../design/tokens.css">
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="wordmark" href="index.html">đập<span>.</span>chuột</a>
+      <span class="meta">Tài liệu đặc tả · v1.0 · 16/11/2026</span>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="toc" aria-label="Mục lục tài liệu">
+      <div class="label">Tài liệu</div>
+      <ol>
+        <li><a href="index.html"><span class="num">00</span>Mục lục</a></li>
+        <li><a href="01-tong-quan.html"><span class="num">01</span>Tổng quan</a></li>
+        <li><a href="02-chuc-nang.html"><span class="num">02</span>Chức năng</a></li>
+        <li><a href="03-man-hinh.html"><span class="num">03</span>Màn hình</a></li>
+        <li><a href="04-quy-tac-du-lieu.html" aria-current="page"><span class="num">04</span>Quy tắc &amp; dữ liệu</a></li>
+        <li><a href="05-ke-hoach-test.html"><span class="num">05</span>Kế hoạch test</a></li>
+      </ol>
+    </nav>
+    <main>
+      <span class="eyebrow">Tài liệu 04</span>
+      <h1>Quy tắc &amp; dữ liệu</h1>
+      <p class="lead">Các con số, trạng thái và quy tắc mà code game phải tuân theo. Mọi giá trị cấu hình được gom về một chỗ để dễ chỉnh và dễ kiểm thử.</p>
+
+      <h2>Hằng số cấu hình</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tên</th><th>Giá trị</th><th>Ý nghĩa</th><th>Nguồn</th></tr></thead>
+          <tbody>
+            <tr><td><code>GRID_SIZE</code></td><td>3</td><td>Lưới 3×3 = 9 ô</td><td><span class="badge">Yêu cầu</span></td></tr>
+            <tr><td><code>ROUND_MS</code></td><td>30 000</td><td>Độ dài một lượt</td><td><span class="badge">Yêu cầu</span></td></tr>
+            <tr><td><code>MOLE_VISIBLE_MS</code></td><td>800</td><td>Thời gian chuột hiện nếu không bị đập</td><td><span class="badge accent">Q2</span></td></tr>
+            <tr><td><code>MOLE_GAP_MS</code></td><td>300</td><td>Khoảng nghỉ giữa hai chuột</td><td><span class="badge accent">Q2</span></td></tr>
+            <tr><td><code>COUNTDOWN_STEPS</code></td><td>3</td><td>Số bước đếm ngược (3, 2, 1)</td><td><span class="badge accent">Q3</span></td></tr>
+            <tr><td><code>COUNTDOWN_STEP_MS</code></td><td>1 000</td><td>Thời lượng mỗi số đếm ngược</td><td><span class="badge accent">Q3</span></td></tr>
+            <tr><td><code>HIT_EFFECT_MS</code></td><td>300</td><td>Thời lượng hiệu ứng trúng (chỉ hiển thị)</td><td><span class="badge">Đề xuất</span></td></tr>
+            <tr><td><code>LOW_TIME_S</code></td><td>5</td><td>Từ ngưỡng này, thời gian hiển thị màu cảnh báo</td><td><span class="badge">Đề xuất</span></td></tr>
+            <tr><td><code>STORAGE_KEY</code></td><td><code>"dapChuot.highScore"</code></td><td>Khoá lưu kỷ lục trong <code>localStorage</code></td><td><span class="badge">Đề xuất</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Mô hình trạng thái</h2>
+      <p>Toàn bộ trạng thái của game nằm trong một đối tượng duy nhất; giao diện chỉ là hình chiếu của đối tượng này.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Trường</th><th>Kiểu</th><th>Giá trị đầu</th><th>Mô tả</th></tr></thead>
+          <tbody>
+            <tr><td><code>phase</code></td><td><code>"idle" | "countdown" | "playing" | "ended"</code></td><td><code>"idle"</code></td><td>Trạng thái hiện tại (xem trang 02).</td></tr>
+            <tr><td><code>score</code></td><td>số nguyên ≥ 0</td><td>0</td><td>Điểm lượt hiện tại.</td></tr>
+            <tr><td><code>highScore</code></td><td>số nguyên ≥ 0</td><td>đọc từ lưu trữ, mặc định 0</td><td>Kỷ lục.</td></tr>
+            <tr><td><code>isNewRecord</code></td><td>boolean</td><td><code>false</code></td><td>Lượt vừa xong có phá kỷ lục không.</td></tr>
+            <tr><td><code>countdownEndsAt</code></td><td>mốc thời gian (ms) | null</td><td>null</td><td>Thời điểm kết thúc đếm ngược.</td></tr>
+            <tr><td><code>roundEndsAt</code></td><td>mốc thời gian (ms) | null</td><td>null</td><td>Thời điểm hết lượt = lúc vào <code>playing</code> + <code>ROUND_MS</code>.</td></tr>
+            <tr><td><code>mole</code></td><td><code>{ id, cell, expiresAt }</code> | null</td><td>null</td><td>Chuột đang hiện. <code>cell</code> 0–8, <code>id</code> tăng dần mỗi chuột.</td></tr>
+            <tr><td><code>nextMoleAt</code></td><td>mốc thời gian (ms) | null</td><td>null</td><td>Lúc chuột kế tiếp được phép hiện.</td></tr>
+            <tr><td><code>roundId</code></td><td>số nguyên</td><td>0</td><td>Tăng mỗi lượt mới; mọi hẹn giờ của lượt cũ có <code>roundId</code> khác đều bị bỏ qua.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout info">
+        <strong>Đặt lại khi bắt đầu / chơi lại</strong>
+        <p><code>score = 0</code>, <code>isNewRecord = false</code>, <code>mole = null</code>, <code>nextMoleAt = null</code>, <code>roundEndsAt = null</code>, huỷ mọi hẹn giờ cũ, <code>roundId += 1</code>, <code>phase = "countdown"</code>. <code>highScore</code> giữ nguyên.</p>
+      </div>
+
+      <h2>Quy tắc tính điểm</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mã</th><th>Quy tắc</th></tr></thead>
+          <tbody>
+            <tr><td class="id">R-S1</td><td>Một lần bấm vào ô <code>c</code> chỉ được tính khi <code>phase = "playing"</code>, <code>mole ≠ null</code>, <code>mole.cell = c</code> và thời điểm bấm &lt; <code>mole.expiresAt</code> và &lt; <code>roundEndsAt</code>.</td></tr>
+            <tr><td class="id">R-S2</td><td>Khi được tính: <code>score += 1</code>, <code>mole = null</code>, <code>nextMoleAt = lúc bấm + MOLE_GAP_MS</code>.</td></tr>
+            <tr><td class="id">R-S3</td><td>Mọi lần bấm khác (ô trống, sai ô, chuột đã biến mất, ngoài <code>playing</code>) không đổi điểm và không gây lỗi.</td></tr>
+            <tr><td class="id">R-S4</td><td>Không có thao tác nào làm điểm giảm; điểm luôn ≥ 0.</td></tr>
+            <tr><td class="id">R-S5</td><td>Một chuột chỉ tính một lần: sau R-S2, <code>mole = null</code> nên mọi lần bấm tiếp theo rơi vào R-S3.</td></tr>
+            <tr><td class="id">R-S6</td><td>Thao tác tính theo thời điểm nhấn xuống (pointer down / key down), không chờ nhả. Sự kiện phím lặp tự động bị bỏ qua.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Quy tắc thời gian</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mã</th><th>Quy tắc</th></tr></thead>
+          <tbody>
+            <tr><td class="id">R-T1</td><td>Đồng hồ dựa trên mốc thời gian đơn điệu (<code>performance.now()</code>), không đếm số lần hẹn giờ. Thời gian còn lại = <code>roundEndsAt − bây giờ</code>.</td></tr>
+            <tr><td class="id">R-T2</td><td>Hiển thị = <code>ceil(còn lại / 1000)</code>, kẹp trong 0–30. Lượt bắt đầu hiển thị 30, kết thúc hiển thị 0.</td></tr>
+            <tr><td class="id">R-T3</td><td>Lượt kết thúc khi <code>bây giờ ≥ roundEndsAt</code>. Sai lệch cho phép so với thời gian thực: ±0,5 giây.</td></tr>
+            <tr><td class="id">R-T4</td><td><strong>Chuyển tab (Q1):</strong> đồng hồ vẫn chạy. Trình duyệt có thể làm chậm hẹn giờ khi tab ẩn, nên khi tab hiện lại (sự kiện <code>visibilitychange</code>) phải đối chiếu ngay: hết đếm ngược thì vào <code>playing</code>; hết lượt thì kết thúc; chuột quá <code>expiresAt</code> thì xoá.</td></tr>
+            <tr><td class="id">R-T5</td><td>Chuột đầu tiên hiện ngay khi vào <code>playing</code>. Chuột hết hạn tại <code>expiresAt = lúc hiện + MOLE_VISIBLE_MS</code>; khi đó <code>nextMoleAt = expiresAt + MOLE_GAP_MS</code>.</td></tr>
+            <tr><td class="id">R-T6</td><td>Không có chuột mới nào hiện tại hoặc sau <code>roundEndsAt</code>. Khi kết thúc: <code>mole = null</code>, <code>nextMoleAt = null</code>, huỷ mọi hẹn giờ.</td></tr>
+            <tr><td class="id">R-T7</td><td>Đếm ngược: số hiển thị = <code>ceil((countdownEndsAt − bây giờ) / 1000)</code> (3 → 2 → 1). Khi về 0: <code>roundEndsAt = countdownEndsAt + ROUND_MS</code> (tính từ mốc, không từ lúc hàm chạy) để không cộng dồn độ trễ.</td></tr>
+            <tr><td class="id">R-T8</td><td>Tại mọi thời điểm chỉ có một lượt hoạt động: mọi hẹn giờ mang theo <code>roundId</code> và tự huỷ nếu không trùng <code>roundId</code> hiện tại.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Quy tắc ngẫu nhiên</h2>
+      <ul>
+        <li>Ô của chuột mới chọn đều trong 0–8: <code>Math.floor(Math.random() * 9)</code>; mỗi ô xác suất 1/9.</li>
+        <li>Được phép trùng ô của chuột trước (theo <code>YEU-CAU.md</code>).</li>
+        <li>Không cần hạt giống cố định khi chơi; khi kiểm thử có thể thay hàm ngẫu nhiên để tái hiện kết quả.</li>
+      </ul>
+
+      <h2>Ô và phím</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Chỉ số ô</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr></thead>
+          <tbody>
+            <tr><td>Vị trí (hàng, cột)</td><td>1,1</td><td>1,2</td><td>1,3</td><td>2,1</td><td>2,2</td><td>2,3</td><td>3,1</td><td>3,2</td><td>3,3</td></tr>
+            <tr><td>Phím</td><td><kbd>7</kbd></td><td><kbd>8</kbd></td><td><kbd>9</kbd></td><td><kbd>4</kbd></td><td><kbd>5</kbd></td><td><kbd>6</kbd></td><td><kbd>1</kbd></td><td><kbd>2</kbd></td><td><kbd>3</kbd></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small muted">Chỉ số 0–8 đếm từ trái sang phải, trên xuống dưới. Nhận cả phím hàng số (<code>Digit1</code>…<code>Digit9</code>) và bàn phím số (<code>Numpad1</code>…<code>Numpad9</code>).</p>
+
+      <h2>Lưu trữ kỷ lục</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mã</th><th>Quy tắc</th></tr></thead>
+          <tbody>
+            <tr><td class="id">R-D1</td><td>Lưu tại <code>localStorage["dapChuot.highScore"]</code> dạng chuỗi số nguyên thập phân, ví dụ <code>"27"</code>.</td></tr>
+            <tr><td class="id">R-D2</td><td>Đọc một lần khi tải trang. Giá trị không tồn tại, không phải số nguyên, âm hoặc lỗi đọc → coi là 0.</td></tr>
+            <tr><td class="id">R-D3</td><td>Chỉ ghi khi kết thúc lượt và <code>score &gt; highScore</code>. Điểm 0 không bao giờ được ghi.</td></tr>
+            <tr><td class="id">R-D4</td><td><code>localStorage</code> không dùng được (chế độ riêng tư, bị chặn, đầy): game vẫn chơi bình thường, kỷ lục chỉ giữ trong phiên, bắt lỗi im lặng — không có lỗi console.</td></tr>
+            <tr><td class="id">R-D5</td><td>Không lưu dữ liệu nào khác (không lịch sử lượt, không thông tin cá nhân).</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <nav class="pager" aria-label="Chuyển trang"><a class="prev" href="03-man-hinh.html"><span>← Trang trước</span>Màn hình</a><a class="next" href="05-ke-hoach-test.html"><span>Trang sau →</span>Kế hoạch test</a></nav>
+    </main>
+  </div>
+  <footer class="site">Mini game Đập chuột · Tài liệu đặc tả, chưa có code game · Giao diện theo <code>design/tokens.css</code></footer>
+</body>
+</html>
