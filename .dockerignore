@@ -1,0 +1,25 @@
+# Chỉ cần server/, app/, design/ trong image
+.git
+.gitignore
+.dockerignore
+Dockerfile
+compose.yaml
+docker-compose*.yml
+README.md
+YEU-CAU.md
+docs/
+
+# Phụ thuộc, log, biến môi trường
+**/node_modules
+**/npm-debug.log*
+**/*.log
+**/.env
+**/.env.*
+
+# Editor, hệ điều hành, công cụ
+**/.DS_Store
+**/Thumbs.db
+**/.vscode
+**/.idea
+**/*.swp
+.claude/

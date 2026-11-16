@@ -1,0 +1,318 @@
+/* Đập chuột — giao diện. Màu, chữ, khoảng cách, bo góc lấy từ design/tokens.css.
+   Chỉ các kích thước bố cục riêng của game được khai báo tại đây. */
+:root {
+  --grid-max: 30rem;          /* lưới không vượt ~480px trên desktop */
+  --grid-vw: 92vw;            /* lưới chiếm tối đa 92% bề ngang */
+  --play-chrome: 9.5rem;      /* chiều cao dành cho thanh trạng thái + lề khi tính lưới theo chiều cao */
+  --mole-hidden-offset: 70px; /* đơn vị người dùng của SVG (viewBox 100) */
+  --mole-rise: 90ms;          /* chuyển động trồi lên ≤ 100 ms */
+  --hit-effect: 300ms;        /* HIT_EFFECT_MS */
+  --float-distance: calc(var(--space-5) * -1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: var(--space-0);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  /* Chống bôi đen, menu chạm giữ, phóng to khi chạm đúp */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: var(--space-0);
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.app {
+  min-height: 100%;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.screen {
+  width: 100%;
+  max-width: var(--grid-max);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.screen[hidden] { display: none; }
+
+/* ---------- Chữ ---------- */
+.title {
+  margin: var(--space-0) var(--space-0) var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+}
+.rules {
+  margin: var(--space-0) var(--space-0) var(--space-6);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+}
+.record-line {
+  margin: var(--space-4) var(--space-0) var(--space-0);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-md);
+}
+.record-line strong { color: var(--color-text); font-variant-numeric: tabular-nums; }
+.record-line[hidden] { display: none; }
+.hint {
+  margin: var(--space-6) var(--space-0) var(--space-0);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-subtle);
+}
+kbd {
+  display: inline-block;
+  min-width: var(--space-5);
+  padding: var(--space-0) var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-bottom-width: var(--border-width-thick);
+  border-radius: var(--radius-sm);
+}
+
+.hero-mole {
+  width: calc(var(--swatch-size) * 1.4);
+  height: calc(var(--swatch-size) * 1.4);
+  margin-bottom: var(--space-4);
+}
+
+/* ---------- Nút ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--control-height-md);
+  padding: var(--space-0) var(--space-6);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-base) var(--easing-standard),
+    transform var(--duration-fast) var(--easing-standard);
+}
+.btn-lg { height: var(--control-height-lg); padding: var(--space-0) var(--space-7); font-size: var(--font-size-lg); }
+/* Nền cam đậm một bậc để chữ trắng đạt tương phản ≥ 4.5:1 (TC-55) */
+.btn-accent { background: var(--color-accent-hover); color: var(--color-white); }
+.btn-accent:hover:not(:disabled) { background: var(--color-accent-active); }
+.btn-accent:active:not(:disabled) { background: var(--color-accent-active); transform: scale(var(--scale-pressed)); }
+.btn:disabled { background: var(--color-disabled-bg); color: var(--color-disabled-text); cursor: not-allowed; }
+.btn:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-width);
+}
+
+/* ---------- Thanh trạng thái ---------- */
+.status {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.stat-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.stat-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-snug);
+  font-variant-numeric: tabular-nums;
+}
+.stat-record .stat-value { color: var(--color-text-muted); }
+.stat-time.is-low .stat-value { color: var(--color-danger); }
+
+/* ---------- Lưới ---------- */
+.board {
+  position: relative;
+  --cell-min: calc(var(--control-height-lg) + var(--space-2)); /* ≥ 64px để chạm */
+  --grid-gap: var(--space-3);
+  width: min(var(--grid-vw), var(--grid-max), calc(100dvh - var(--play-chrome)));
+  min-width: calc(var(--cell-min) * 3 + var(--grid-gap) * 4);
+  border-radius: var(--radius-lg);
+  outline: none;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--grid-gap);
+  padding: var(--grid-gap);
+  background: var(--color-sage-100);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+}
+
+.cell {
+  position: relative;
+  aspect-ratio: 1;
+  padding: var(--space-0);
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-sand-300);
+  cursor: pointer;
+  overflow: hidden;
+  transition: background-color var(--hit-effect) var(--easing-standard);
+}
+.cell:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--border-width-thick);
+}
+.cell-key {
+  position: absolute;
+  top: var(--space-1);
+  left: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-500);
+  pointer-events: none;
+}
+.cell-art { display: block; width: 100%; height: 100%; pointer-events: none; }
+
+/* Hình SVG: màu từ tokens */
+/* Hố ink-900 và thân chuột clay-600 để chuột ≥ 3:1 so với cả hố lẫn nền ô (TC-55) */
+.hole { fill: var(--color-ink-900); }
+.rim { fill: var(--color-sand-400); }
+.m-body { fill: var(--color-clay-600); }
+.m-ear { fill: var(--color-clay-700); }
+.m-muzzle { fill: var(--color-clay-100); }
+.m-eye { fill: var(--color-ink-900); }
+
+/* Chuột: ẩn dưới hố; trồi lên khi ô có chuột; biến mất ngay (không chuyển động) khi bị đập/hết hạn */
+.mole { transform: translateY(var(--mole-hidden-offset)); }
+.cell.has-mole .mole {
+  transform: translateY(0);
+  transition: transform var(--mole-rise) var(--easing-standard);
+}
+
+/* Hiệu ứng trúng */
+.cell.hit {
+  background: var(--color-clay-100);
+  box-shadow: inset 0 0 0 var(--border-width-thick) var(--color-accent);
+}
+.plus {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent);
+  pointer-events: none;
+  animation: float-up var(--hit-effect) var(--easing-standard) forwards;
+}
+@keyframes float-up {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(var(--float-distance)); }
+}
+
+/* Lớp phủ đếm ngược */
+.countdown {
+  position: absolute;
+  inset: var(--space-0);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  background: var(--color-overlay);
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: calc(var(--font-size-5xl) * 1.6);
+  line-height: var(--line-height-tight);
+  cursor: default;
+}
+.board.is-countdown .countdown { display: flex; }
+
+/* ---------- Màn hình Kết thúc ---------- */
+.end-label { margin: var(--space-0); color: var(--color-text-muted); }
+.end-score {
+  margin: var(--space-1) var(--space-0) var(--space-3);
+  font-family: var(--font-display);
+  font-size: calc(var(--font-size-5xl) * 1.3);
+  line-height: var(--line-height-tight);
+  color: var(--color-accent);
+  font-variant-numeric: tabular-nums;
+}
+.badge-record {
+  margin: var(--space-0);
+  padding: var(--space-1) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-soft);
+  color: var(--color-clay-700);
+  font-weight: var(--font-weight-semibold);
+}
+.badge-record[hidden] { display: none; }
+.screen-end .record-line { margin-bottom: var(--space-6); }
+
+/* Màn hình rất hẹp: nhãn trạng thái trên một dòng */
+@media (max-width: 24rem) {
+  .stat { padding: var(--space-2) var(--space-1); }
+  .stat-label { white-space: nowrap; letter-spacing: var(--letter-spacing-normal); }
+}
+
+/* Màn hình thấp (điện thoại xoay ngang) */
+@media (max-height: 30rem) {
+  :root { --play-chrome: 5rem; }
+  .board { --grid-gap: var(--space-2); }
+  .app { padding: var(--space-2); }
+  .status { margin-bottom: var(--space-2); }
+  .stat { padding: var(--space-1) var(--space-2); }
+  .stat-value { font-size: var(--font-size-lg); }
+  .title { font-size: var(--font-size-3xl); }
+  .hero-mole { display: none; }
+  .hint { display: none; }
+}
+
+/* Giảm chuyển động: bỏ trồi lên và "+1" bay, giữ đổi màu */
+@media (prefers-reduced-motion: reduce) {
+  .cell.has-mole .mole { transition: none; }
+  .plus { animation: none; opacity: 1; }
+  .btn, .cell { transition: none; }
+}

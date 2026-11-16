@@ -1,0 +1,23 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Biến môi trường / bí mật
+.env
+.env.*
+!.env.example
+
+# Docker (ghi đè cục bộ)
+compose.override.yaml
+docker-compose.override.yml
+
+# Editor & hệ điều hành
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~
