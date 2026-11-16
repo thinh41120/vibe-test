@@ -1,96 +1,87 @@
-# Yêu cầu: Mini game Đập Chuột (trình duyệt)
+# Yêu cầu: Mini game Đập chuột (Whack-a-Mole)
 
-## 1. Tổng quan
+Game chạy trên trình duyệt, lưới 3×3 ô. Người chơi bấm trúng chuột để ghi điểm, mỗi lượt kéo dài 30 giây.
 
-- **Thể loại:** game phản xạ, một người chơi.
-- **Nền tảng:** chạy trực tiếp trên trình duyệt (desktop và điện thoại), không cần cài đặt, không cần server.
-- **Mục tiêu người chơi:** đập trúng càng nhiều chuột càng tốt trong 30 giây.
+> Các giá trị đánh dấu **(mặc định)** là đề xuất hợp lý do yêu cầu gốc chưa nêu; có thể điều chỉnh trước khi code.
 
-## 2. Luật chơi
+## 1. Luật chơi
 
-1. Bàn chơi là lưới **3×3 = 9 ô (hang)**.
-2. Khi bắt đầu lượt, đồng hồ đếm ngược từ **30 giây**.
-3. Chuột lần lượt **ngoi lên ngẫu nhiên** ở một ô, ở lại trong một khoảng thời gian ngắn rồi tự lặn xuống.
-   - Tại một thời điểm chỉ có **tối đa 1 con chuột** xuất hiện.
-   - Thời gian chuột ở trên mặt đất: khoảng **0,6–1,2 giây** (ngẫu nhiên trong khoảng này).
-   - Khoảng nghỉ giữa hai lần xuất hiện: khoảng **0,2–0,5 giây**.
-   - Chuột mới không xuất hiện lại đúng ô vừa xuất hiện ở lần trước.
-4. Người chơi **bấm/chạm** vào ô có chuột để đập.
-   - Đập trúng: chuột lập tức lặn xuống (kèm hiệu ứng "bị đập"), con tiếp theo xuất hiện sau khoảng nghỉ.
-   - Mỗi con chuột chỉ được tính điểm **một lần** (bấm nhiều lần vào cùng con chỉ tính 1).
-   - Bấm vào ô trống: không có tác dụng, không bị trừ điểm.
-5. Khi đồng hồ về **0**: lượt kết thúc ngay, chuột đang hiện (nếu có) biến mất, mọi cú bấm sau đó không được tính.
-6. Người chơi có thể bấm **"Chơi lại"** để bắt đầu lượt mới; điểm và thời gian được đặt lại.
+1. Lưới gồm 9 ô (3 hàng × 3 cột), ban đầu tất cả ô đều trống.
+2. Khi lượt chơi bắt đầu, chuột lần lượt xuất hiện ở một ô ngẫu nhiên.
+3. Tại mỗi thời điểm chỉ có **tối đa 1 chuột** trên lưới.
+4. Mỗi chuột hiện trong khoảng **800 ms** **(mặc định)** rồi tự biến mất nếu không bị bấm.
+5. Chuột mới xuất hiện sau chuột trước khoảng **300 ms** **(mặc định)**; ô của chuột mới được chọn ngẫu nhiên và có thể trùng ô trước.
+6. Người chơi bấm (click chuột / chạm màn hình) vào ô có chuột để đập.
+7. Bấm vào ô trống không bị trừ điểm.
+8. Mỗi chuột chỉ ghi điểm một lần; sau khi bị đập, chuột biến mất ngay.
+9. Mỗi lượt kéo dài đúng **30 giây**. Hết giờ, game dừng, mọi chuột trên lưới biến mất và không nhận thêm thao tác bấm.
+10. Sau khi kết thúc, người chơi có thể chơi lại; điểm và đồng hồ được đặt lại.
 
-## 3. Cách tính điểm
+## 2. Cách tính điểm
 
-| Sự kiện | Điểm |
+| Tình huống | Điểm |
 |---|---|
-| Đập trúng chuột | **+1** |
-| Bấm trượt (ô trống) | 0 |
-| Để chuột tự lặn mất | 0 |
+| Bấm trúng ô đang có chuột | **+1** |
+| Bấm vào ô trống | 0 |
+| Chuột tự biến mất (không bị bấm) | 0 |
 
-- Điểm bắt đầu mỗi lượt là **0**, không bao giờ âm.
-- Điểm hiển thị cập nhật **ngay** khi đập trúng.
-- **Điểm cao nhất (kỷ lục)** được lưu trên trình duyệt (localStorage) và vẫn còn sau khi tải lại trang. Nếu trình duyệt không cho lưu, game vẫn chạy bình thường, chỉ không giữ kỷ lục.
+- Điểm khởi đầu mỗi lượt là 0; điểm không bao giờ âm.
+- Một chuột chỉ cộng điểm một lần, dù bấm nhiều lần liên tiếp vào ô đó.
+- **Điểm cao nhất** được lưu trong `localStorage` của trình duyệt **(mặc định)** và hiển thị cạnh điểm hiện tại. Nếu lượt vừa xong vượt kỷ lục thì cập nhật và báo "Kỷ lục mới".
 
-## 4. Màn hình
+## 3. Màn hình
 
-### 4.1. Màn hình bắt đầu
-- Tên game: **Đập Chuột**.
-- Một dòng giới thiệu luật ngắn: "Đập trúng chuột trong 30 giây, mỗi con được 1 điểm."
-- Hiển thị **kỷ lục** hiện tại (hoặc "Chưa có kỷ lục").
-- Nút **"Bắt đầu"**.
+### 3.1 Màn hình bắt đầu
+- Tên game.
+- Tóm tắt luật chơi ngắn gọn (1–2 dòng).
+- Nút **Bắt đầu**.
+- Hiển thị điểm cao nhất nếu đã có.
 
-### 4.2. Màn hình chơi
-- **Thanh trên cùng:**
-  - Điểm hiện tại (ví dụ: `Điểm: 12`).
-  - Thời gian còn lại, đếm theo giây (ví dụ: `Thời gian: 18s`). Khi còn ≤ 5 giây, số đổi màu đỏ để cảnh báo.
-  - Kỷ lục (ví dụ: `Kỷ lục: 25`).
-- **Lưới 3×3:** 9 hang có kích thước bằng nhau, căn giữa màn hình. Chuột ngoi lên/lặn xuống có hiệu ứng chuyển động ngắn.
-- **Phản hồi khi đập trúng:** chuột đổi hình (bị đập) hoặc có hiệu ứng "+1" nổi lên; con trỏ có thể là hình cái búa trên desktop.
+### 3.2 Màn hình chơi
+- **Thanh trạng thái** phía trên:
+  - Thời gian còn lại, đếm ngược từ 30 đến 0 (giây).
+  - Điểm hiện tại.
+- **Lưới 3×3** ở giữa: 9 ô kích thước bằng nhau, hình vuông, khoảng cách đều.
+  - Ô trống: hình cái hố.
+  - Ô có chuột: hiển thị hình chuột (emoji 🐹 hoặc hình ảnh đơn giản).
+  - Khi trúng: hiệu ứng ngắn (ví dụ nháy sáng hoặc hiện "+1") rồi chuột biến mất.
+- Con trỏ chuột có dạng bấm được (`pointer`) khi di vào lưới.
 
-### 4.3. Màn hình kết thúc
-- Thông báo **"Hết giờ!"**.
-- Điểm đạt được trong lượt.
-- Nếu phá kỷ lục: hiển thị **"Kỷ lục mới!"**.
-- Nút **"Chơi lại"** (bắt đầu ngay lượt mới).
+### 3.3 Màn hình kết thúc
+- Thông báo "Hết giờ!".
+- Điểm của lượt vừa chơi.
+- Điểm cao nhất; nếu phá kỷ lục thì có dòng "Kỷ lục mới".
+- Nút **Chơi lại**.
 
-### 4.4. Yêu cầu giao diện chung
-- Hiển thị tốt trên màn hình từ **360px** (điện thoại) đến desktop, không bị cuộn ngang.
-- Trên điện thoại, mỗi ô đủ lớn để chạm chính xác (tối thiểu khoảng 80×80px).
-- Chạm trên điện thoại phản hồi ngay, không bị trễ, không phóng to trang khi chạm liên tục.
+### 3.4 Yêu cầu giao diện chung
+- Chạy trên trình duyệt hiện đại (Chrome, Firefox, Edge, Safari bản mới), không cần cài đặt hay backend.
+- Hiển thị tốt trên màn hình máy tính và điện thoại (responsive); các ô đủ lớn để chạm (tối thiểu khoảng 64 px).
+- Chữ rõ ràng, tương phản tốt giữa chuột, hố và nền.
+- Không để người dùng bôi đen văn bản hay phóng to nhầm khi bấm nhanh liên tục (điện thoại).
 
-## 5. Tiêu chí hoàn thành
+## 4. Tiêu chí hoàn thành
 
-Game được coi là hoàn thành khi **tất cả** các mục sau đều đạt:
+Game được xem là hoàn thành khi **tất cả** các mục dưới đây đạt:
 
 **Chức năng**
-- [ ] Mở file trên trình duyệt (Chrome, Safari, Firefox bản mới) là chơi được, không lỗi trong console.
-- [ ] Màn hình bắt đầu hiển thị đúng và nút "Bắt đầu" khởi động lượt chơi.
-- [ ] Lưới hiển thị đúng 9 ô dạng 3×3.
-- [ ] Chuột xuất hiện ngẫu nhiên, tối đa 1 con cùng lúc, không lặp lại đúng ô liền trước.
-- [ ] Đập trúng chuột được +1 điểm, mỗi con chỉ tính 1 lần dù bấm nhiều lần.
-- [ ] Bấm ô trống không thay đổi điểm.
-- [ ] Đồng hồ đếm ngược đúng 30 giây (sai lệch không quá ±0,5 giây) và lượt dừng hẳn khi về 0.
-- [ ] Sau khi hết giờ, bấm vào lưới không còn được tính điểm.
-- [ ] Màn hình kết thúc hiển thị đúng điểm của lượt.
-- [ ] "Chơi lại" đặt điểm về 0, thời gian về 30 giây và bắt đầu lượt mới; bấm nhiều lần không làm chạy song song hai đồng hồ.
-- [ ] Kỷ lục được cập nhật khi điểm lượt cao hơn, và vẫn còn sau khi tải lại trang.
+- [ ] Hiển thị lưới đúng 3×3 = 9 ô.
+- [ ] Bấm **Bắt đầu** thì đồng hồ đếm ngược từ 30 giây và chuột bắt đầu xuất hiện.
+- [ ] Tại mọi thời điểm có không quá 1 chuột trên lưới.
+- [ ] Vị trí chuột ngẫu nhiên, trải đều trên cả 9 ô sau nhiều lượt chơi.
+- [ ] Bấm trúng chuột thì điểm tăng đúng 1 và chuột biến mất ngay.
+- [ ] Bấm nhiều lần vào cùng một chuột chỉ cộng 1 điểm.
+- [ ] Bấm ô trống hoặc chuột đã biến mất không làm đổi điểm.
+- [ ] Đồng hồ về 0 thì game dừng: không còn chuột, bấm vào lưới không đổi điểm.
+- [ ] Màn hình kết thúc hiển thị đúng điểm của lượt chơi.
+- [ ] **Chơi lại** đặt lại điểm về 0, thời gian về 30 giây và bắt đầu lượt mới sạch.
+- [ ] Điểm cao nhất được lưu và vẫn còn sau khi tải lại trang.
 
-**Giao diện & trải nghiệm**
-- [ ] Hiển thị và chơi được trên điện thoại (chạm) lẫn desktop (chuột).
-- [ ] Không có cuộn ngang ở chiều rộng 360px.
-- [ ] Có phản hồi hình ảnh rõ ràng khi đập trúng.
-- [ ] Thời gian còn ≤ 5 giây được làm nổi bật.
+**Chất lượng**
+- [ ] Phản hồi khi bấm gần như tức thì (không trễ cảm nhận được).
+- [ ] Đồng hồ chạy đúng thực tế (30 giây ± 0,5 giây), không bị lệch khi chuyển tab rồi quay lại.
+- [ ] Không có lỗi trong console của trình duyệt khi chơi nhiều lượt liên tiếp.
+- [ ] Bấm **Chơi lại** nhiều lần liên tục không gây chạy trùng nhiều bộ đếm giờ hay nhiều chuột cùng lúc.
+- [ ] Dùng được bằng chuột trên máy tính và bằng cảm ứng trên điện thoại.
 
-**Kỹ thuật**
-- [ ] Chỉ dùng HTML, CSS, JavaScript thuần (không bắt buộc framework); không cần server hay bước build.
-- [ ] Không gọi tài nguyên từ bên ngoài bắt buộc để chơi được (chơi được khi offline).
-
-## 6. Ngoài phạm vi (phiên bản này)
-
-- Nhiều cấp độ khó, chuột tăng tốc theo thời gian.
-- Nhiều chuột cùng lúc, "bom"/vật cản trừ điểm.
-- Âm thanh, nhạc nền.
-- Bảng xếp hạng online, tài khoản người chơi.
+**Phạm vi (ngoài yêu cầu lần này)**
+- Không có nhiều mức độ khó, chuột đặc biệt, trừ điểm, âm thanh, bảng xếp hạng online hay đăng nhập. Có thể bổ sung ở phiên bản sau.
